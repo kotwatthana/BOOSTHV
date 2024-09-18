@@ -20,6 +20,7 @@ int PWM = 0;
 int maxPWM;
 int PWMLimit = 1023 * 0.75; //PFC *0.3 // solar 0.75
 int MAXVO = 400;
+int PL = 60;
 
 void setup() {
   pinMode(pwmch, OUTPUT);
@@ -69,9 +70,12 @@ void setpwm(){
 }
 
 void Bulk(){
-  if(VO < MAXVO){                  // ตรวจสอบ โวลต์ออก น้อยกว่า 400V 
-    if(VO > SetVO){PWM--;}         //ตรวจสอบ โวลต์ออก มากกว่า เซ็ตโวลต์ออก 380V / PWM ลด
-    else if(VO < SetVO){PWM++;}    //ตรวจสอบ โวลต์ออก น้อยกว่า เซ็ตโวลต์ออก 380V / PWM เพิ่ม
+  if(VO < MAXVO){// ตรวจสอบ โวลต์ออก น้อยกว่า 400V 
+    if(PV > PL){
+      if(VO > SetVO){PWM--;}         //ตรวจสอบ โวลต์ออก มากกว่า เซ็ตโวลต์ออก 380V / PWM ลด
+      else if(VO < SetVO){PWM++;}    //ตรวจสอบ โวลต์ออก น้อยกว่า เซ็ตโวลต์ออก 380V / PWM เพิ่ม
+    }
+    else{PWM--;}              
   }
   else {PWM = 0;}                  // ตรวจสอบ โวลต์ออก มากกว่า 400V / PWM = 0
   PWM = constrain(PWM, 0, PWMLimit);
